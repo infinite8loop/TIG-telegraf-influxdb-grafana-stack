@@ -1,6 +1,8 @@
-# Monitoring Stack Setup
+# TIG Monitoring Stack Setup
 
 This README provides instructions for setting up a monitoring stack using Grafana, InfluxDB, and Telegraf in a Kubernetes environment.
+
+![image](https://github.com/infinite8loop/influxdb-grafana-telegraf-stack/assets/103845823/1c15e8d7-1ed3-4de6-af64-8cc5ff4ee6db)
 
 ## Components
 
