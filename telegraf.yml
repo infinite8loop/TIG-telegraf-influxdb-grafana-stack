@@ -1,0 +1,95 @@
+###########################################################################################################
+###########################################  Telegraf   ###################################################
+###########################################################################################################
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: telegraf-config
+data:
+  telegraf.conf: |-
+    [global_tags]
+
+    [agent]
+      interval = "60s"
+      round_interval = true
+      metric_batch_size = 1000
+      metric_buffer_limit = 10000
+      collection_jitter = "0s"
+      flush_interval = "10s"
+      flush_jitter = "0s"
+      precision = ""
+      hostname = "192.xxx.0.xxx"  # Replace with your actual hostname or use the appropriate field
+      omit_hostname = false
+
+    [[outputs.influxdb]]
+      urls = ["http://influxdb-service:8086"]
+      database = "influx"
+      timeout = "5s"
+      username = "telegraf"
+      password = "metricsmetricsmetricsmetrics"
+
+    [[inputs.cpu]]
+      percpu = true
+      totalcpu = true
+      collect_cpu_time = false
+      report_active = false
+
+    [[inputs.disk]]
+      ignore_fs = ["tmpfs", "devtmpfs", "devfs", "iso9660", "overlay", "aufs", "squashfs"]
+
+    [[inputs.mem]]
+
+    [[inputs.http_response]]
+      urls = [
+        "https://google.com/"
+      ]
+      response_timeout = "10s"
+      method = "GET"
+      follow_redirects = false
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: telegraf
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: telegraf
+  template:
+    metadata:
+      labels:
+        app: telegraf
+    spec:
+      containers:
+        - name: telegraf
+          image: telegraf
+          ports:
+            - containerPort: 8125
+          volumeMounts:
+            - name: telegraf-config-volume
+              mountPath: /etc/telegraf/telegraf.conf
+              subPath: telegraf.conf
+      volumes:
+        - name: telegraf-config-volume
+          configMap:
+            name: telegraf-config
+            items:
+              - key: telegraf.conf
+                path: telegraf.conf      
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: telegraf-service
+spec:
+  selector:
+    app: telegraf
+  ports:
+    - protocol: TCP
+      port: 8125
+      targetPort: 8125 
