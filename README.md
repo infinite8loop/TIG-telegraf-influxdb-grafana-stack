@@ -71,6 +71,8 @@ kubectl delete -f grafana-influxdb-telegraf.yaml
 
 # Bonus Tip
 Import dashboard in Grafana with id - "11777" to monitor health of all endpoints on a single pane of window.
+![image](https://github.com/infinite8loop/influxdb-grafana-telegraf-stack/assets/103845823/e7461752-1c90-4a2b-9c0b-b9d7cce5f419)
+
 
 Additional Information
 Grafana: https://grafana.com/docs/grafana/latest/getting-started/getting-started-k8s/
